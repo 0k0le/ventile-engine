@@ -201,7 +201,7 @@ namespace Ventile {
 			DEBUG("Mouse class destroyed...");
 		}
 #else
-		LONG get_mouse_x() {
+		LONG Mouse::get_mouse_x() {
 			POINT pointInfo;
 
 			if (GetCursorPos(&pointInfo) == FALSE)
@@ -210,7 +210,7 @@ namespace Ventile {
 			return pointInfo.x;
 		}
 
-		LONG get_mouse_y() {
+		LONG Mouse::get_mouse_y() {
 			POINT pointInfo;
 
 			if (GetCursorPos(&pointInfo) == FALSE)

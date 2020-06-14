@@ -42,7 +42,10 @@ namespace Ventile {
 	namespace System {
 
 #ifdef _WIN32
-		VENTILEAPI bool is_key_pressed(const bool all = true, const int vk = 0);
+		class VENTILEAPI Keyboard {
+		public:
+			bool get_key_state(const int vk = 0);
+		};
 #else
 		class VENTILEAPI Keyboard {
 		private:

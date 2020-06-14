@@ -66,6 +66,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #include <io.h>
+#include <process.h>
 #endif
 
 // Linux Header
@@ -103,11 +104,15 @@ using std::cerr;
 
 // Set process exit function
 #ifdef _WIN32
+#define KILLKEYPRINTF "%lu"
+#define KILLKEYTYPE int
 #define SLEEP(x) (Sleep(x))
 #define noinline __declspec(noinline)
 #define EXIT(exitcode) ExitProcess(exitcode)
 #define ERR(format, ...) fprintf(stderr, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #else
+#define KILLKEYPRINTF "%u"
+#define KILLKEYTYPE unsigned short
 #define INPUT_DEVICE_DIRECTORY "/dev/input/by-path/"
 #define DEVICE_FILE_DIR_LENGTH 4096
 #define SLEEP(x) (sleep(x/1000))

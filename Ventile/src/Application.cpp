@@ -40,40 +40,32 @@
 
 namespace Ventile {
 	VENTILEAPI bool engine_running = true;
-#ifdef _WIN32
-    VENTILEAPI int kill_key;
-#else
-    VENTILEAPI unsigned short kill_key;
-#endif
+    VENTILEAPI KILLKEYTYPE kill_key = 0;
 
 	Application::Application() {
-#ifndef _WIN32
+
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
-#endif
 
         printf("Ventile Engine Version: " ENGINE_VERSION "\n");
 	}
 
 	Application::~Application() {
 		printf("Engine shutting down\n");
-#ifndef _WIN32
+
         delete keyboard;
         delete mouse;
-#endif
+
         SLEEP(1000);
 	}
 
 	void Application::run() {
 
         while (engine_running) {
-#ifdef _WIN32
-            if (kill_key && System::is_key_pressed(false, kill_key))
-                engine_running = false;
-#else
             if (kill_key && keyboard->get_key_state(kill_key))
                 engine_running = false;
-#endif
+
+            app_proc();
         }
 	}
 }

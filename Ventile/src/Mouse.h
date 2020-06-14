@@ -37,8 +37,11 @@ namespace Ventile{
 
         };
 #else
-        VENTILEAPI LONG get_mouse_x();
-        VENTILEAPI LONG get_mouse_y();
+        class VENTILEAPI Mouse {
+        public:
+            LONG get_mouse_x();
+            LONG get_mouse_y();
+        };
 #endif
 	}
 }

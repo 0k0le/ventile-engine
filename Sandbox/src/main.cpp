@@ -35,39 +35,26 @@
 // Windows 10 Home
 // Evaluation Copy. Build 19631.mn_release.200514-1410
 
-// Ventile API - Ventile.h must be included first
-#include "../../Ventile/src/Ventile.h"
+// Ventile Engine API
 #include "VentileApplication.h"
 
-// User must create main class, signal handler, and application spawner
-
-class Sandbox : public Ventile::Application {
-public:
-	Sandbox() {
-		printf("Ventile Example Application\n");
-		// Register engine kill key
 #ifdef _WIN32
-		Ventile::kill_key = VK_ESCAPE;
+#define KILLCODE1 VK_SHIFT
+#define KILLCODE2 VK_CONTROL
 #else
-		Ventile::kill_key = KEY_ESC;
+#define KILLCODE1 KEY_LEFTSHIFT
+#define KILLCODE2 KEY_LEFTCTRL
 #endif
-	}
 
-	~Sandbox() {
-		printf("Ventile Example Application shutting down\n");
-		fflush(stdout);
-	}
-};
+// Application main loop
+static inline bool VentileApplicationMainLoop(register Ventile::Application* app) {
+	// Disable mouse coords
+	printf("X --> " KILLKEYPRINTF " | Y --> " KILLKEYPRINTF "\n",
+		app->mouse->get_mouse_x(), app->mouse->get_mouse_y());
 
-// Register engine signal handler
-void SignalHandler(int signal) {
-	if (signal == SIGINT)
-		Ventile::engine_running = false;
+	// Kill engine if CTRL and SHIFT are pressed
+	if (app->keyboard->get_key_state(KILLCODE1) && app->keyboard->get_key_state(KILLCODE2))
+		return false;
 
-	return;
-}
-
-// Register engine application launcher
-Ventile::Application* CreateApplication() {
-	return new Sandbox();
+	return true;
 }

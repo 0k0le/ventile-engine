@@ -43,14 +43,18 @@
 
 namespace Ventile {
 	class VENTILEAPI Application {
-	private:
-#ifndef _WIN32
+
+	public:
 		System::Keyboard* keyboard;
 		System::Mouse* mouse;
-#endif
-	public:
+
 		Application();
 		~Application();
 		void run();
+
+		// Application controlled main loop
+		virtual void app_proc() {
+			return;
+		}
 	};
 }

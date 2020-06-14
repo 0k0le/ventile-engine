@@ -188,8 +188,8 @@ namespace Ventile {
 
 #else 
 
-		bool is_key_pressed(const bool all, const int vk) {
-			if (all) {
+		bool Keyboard::get_key_state(const int vk) {
+			if (vk == 0xff) {
 				for (int i = 0; i < 255; i++) {
 					if (GetAsyncKeyState(i) & (1 << 15)) {
 						return true;
