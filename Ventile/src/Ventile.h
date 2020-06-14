@@ -60,6 +60,7 @@
 #include <errno.h>
 #include <string.h>
 #include <signal.h>
+#include <stdarg.h>
 
 // Windows Headers
 // -------------------
@@ -175,7 +176,7 @@ namespace Ventile {
 	namespace System {
 		// MALLOCS
 		// -------------------
-		VENTILEAPI void* ec_malloc(const unsigned int nBytes);
+		VENTILEAPI void* ec_malloc(const size_t nBytes);
 
 		// I/O
 		// -------------------
@@ -183,6 +184,9 @@ namespace Ventile {
 		VENTILEAPI int open_file(const char* const file_name, const int flags, char** buf = NULL, const bool isproc = false);
 	}
 }
+
+#define LOGFAIL 0
+#define LOGSUCCESS 1
 
 #include "Application.h"
 #include "EntryPoint.h"

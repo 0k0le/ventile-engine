@@ -1,5 +1,5 @@
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
-/*--/ Vulkan API Test Software /--*/   /**/   /*-----/--- Application.h --/-----*/
+/*--/ Vulkan API Test Software /--*/   /**/   /*----- VentileApplication.h -----*/
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
   /*------------------------/-----------------------------------/-----------------*/
  /*-- Matthew Todd Geiger -/- matthewgeigersoftware@gmail.com -/- 425-363-0746 --*/
@@ -34,29 +34,65 @@
 // -------------------
 // Windows 10 Home
 // Evaluation Copy. Build 19631.mn_release.200514-1410
-// -------------------
+
+// INCLUDE THIS HEADER AFTER Ventile.h
 
 #pragma once
-// Application includes other engine classes
-#include "Logging.h"
-#include "Keyboard.h"
-#include "Mouse.h"
+
+#include "Ventile.h"
+#undef VENTILEAPI
+
+static inline bool VentileApplicationMainLoop(Ventile::Application* app);
+
+#ifdef  _WIN32
+#define VENTILEAPI __declspec(dllimport)
+#else
+#define VENTILEAPI extern
+#endif
 
 namespace Ventile {
-	class VENTILEAPI Application {
+	VENTILEAPI bool engine_running;
 
-	public:
-		System::Keyboard* keyboard;
-		System::Mouse* mouse;
-		System::Logger* logger;
+#ifdef _WIN32
+	VENTILEAPI int kill_key;
+#else
+	VENTILEAPI unsigned short kill_key;
+#endif
+}
 
-		Application();
-		~Application();
-		void run();
+class Sandbox : public Ventile::Application {
+public:
+	Sandbox() {
+		logger->log(LOGSUCCESS, "Launching Sandbox\n");
+		// Register engine kill key
+#ifdef _WIN32
+		Ventile::kill_key = VK_ESCAPE;
+#else
+		Ventile::kill_key = KEY_ESC;
+#endif
+	}
 
-		// Application controlled main loop
-		virtual void app_proc() {
-			return;
-		}
-	};
+	~Sandbox() {
+		//printf("Ventile Example Application shutting down\n");
+		fflush(stdout);
+	}
+
+	// GAME LOOP
+	void app_proc() { 
+		if (!VentileApplicationMainLoop(this))
+			Ventile::engine_running = false;
+	}
+};
+
+// Register engine signal handler
+void SignalHandler(int signal) {
+	if (signal == SIGINT)
+		Ventile::engine_running = false;
+
+	return;
+}
+
+// Register engine application launcher
+Ventile::Application* CreateApplication() {
+	return new Sandbox();
 }

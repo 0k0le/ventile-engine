@@ -46,15 +46,17 @@ namespace Ventile {
 
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
+        logger = new System::Logger();
 
-        printf("Ventile Engine Version: " ENGINE_VERSION "\n");
+        logger->log(LOGSUCCESS, "Ventile Engine Version: " ENGINE_VERSION "\n");
 	}
 
 	Application::~Application() {
-		printf("Engine shutting down\n");
+		logger->log(LOGSUCCESS, "Engine shutting down\n");
 
         delete keyboard;
         delete mouse;
+        delete logger;
 
         SLEEP(1000);
 	}

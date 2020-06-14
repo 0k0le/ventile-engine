@@ -42,7 +42,7 @@ namespace Ventile {
     namespace System {
         // MALLOCS
         // -------------------
-        void* ec_malloc(const unsigned int nBytes) {
+        void* ec_malloc(const size_t nBytes) {
             // Allocate memory
             register void* ptr = NULL;
             if ((ptr = malloc(nBytes)) == NULL)
