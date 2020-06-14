@@ -1,5 +1,5 @@
-  /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
- /*--/ Vulkan API Test Software /--*/   /**/   /*-----/----- main.cpp -----/-----*/
+/*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
+/*--/ Vulkan API Test Software /--*/   /**/   /*----- VentileApplication.h -----*/
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
   /*------------------------/-----------------------------------/-----------------*/
  /*-- Matthew Todd Geiger -/- matthewgeigersoftware@gmail.com -/- 425-363-0746 --*/
@@ -35,36 +35,24 @@
 // Windows 10 Home
 // Evaluation Copy. Build 19631.mn_release.200514-1410
 
-// Ventile API - Ventile.h must be included first
-#include "../../Ventile/src/Ventile.h"
-#include "VentileApplication.h"
+// INCLUDE THIS HEADER AFTER Ventile.h
 
-// User must create main class, signal handler, and application spawner
+#pragma once
 
-class Sandbox : public Ventile::Application {
-public:
-	Sandbox() {
-		printf("Ventile Example Application\n");
-#ifdef _WIN32
-		Ventile::kill_key = VK_ESCAPE;
+#undef VENTILEAPI
+
+#ifdef  _WIN32
+#define VENTILEAPI __declspec(dllimport)
 #else
-		Ventile::kill_key = KEY_ESC;
+#define VENTILEAPI extern
 #endif
-	}
 
-	~Sandbox() {
-		printf("Ventile Example Application shutting down\n");
-		fflush(stdout);
-	}
-};
+namespace Ventile {
+	VENTILEAPI bool engine_running;
 
-void SignalHandler(int signal) {
-	if (signal == SIGINT)
-		Ventile::engine_running = false;
-
-	return;
-}
-
-Ventile::Application* CreateApplication() {
-	return new Sandbox();
+#ifdef _WIN32
+	VENTILEAPI int kill_key;
+#else
+	VENTILEAPI unsigned short kill_key;
+#endif
 }

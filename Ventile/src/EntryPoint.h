@@ -1,5 +1,5 @@
-  /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
- /*--/ Vulkan API Test Software /--*/   /**/   /*-----/----- main.cpp -----/-----*/
+/*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
+/*--/ Vulkan API Test Software /--*/   /**/   /*-----/--- EntryPoint.h ---/-----*/
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
   /*------------------------/-----------------------------------/-----------------*/
  /*-- Matthew Todd Geiger -/- matthewgeigersoftware@gmail.com -/- 425-363-0746 --*/
@@ -35,36 +35,27 @@
 // Windows 10 Home
 // Evaluation Copy. Build 19631.mn_release.200514-1410
 
-// Ventile API - Ventile.h must be included first
-#include "../../Ventile/src/Ventile.h"
-#include "VentileApplication.h"
+#pragma once
 
-// User must create main class, signal handler, and application spawner
+#ifndef _ENGINE_DLL
 
-class Sandbox : public Ventile::Application {
-public:
-	Sandbox() {
-		printf("Ventile Example Application\n");
-#ifdef _WIN32
-		Ventile::kill_key = VK_ESCAPE;
-#else
-		Ventile::kill_key = KEY_ESC;
+// User must require signal handler and application spawner
+extern Ventile::Application* CreateApplication();
+extern void SignalHandler(int signal);
+
+int main(const int argc, const char** const argv) {
+	UNUSED(argc); UNUSED(argv);
+
+	// Setup signal handling
+	if (signal(SIGINT, SignalHandler) == SIG_ERR)
+		ERRQ("Failed to initialize signal handler");
+
+	// Spawn application
+	Ventile::Application* app = CreateApplication();
+	app->run();
+	delete app;
+
+	EXIT(EXIT_SUCCESS);
+}
+
 #endif
-	}
-
-	~Sandbox() {
-		printf("Ventile Example Application shutting down\n");
-		fflush(stdout);
-	}
-};
-
-void SignalHandler(int signal) {
-	if (signal == SIGINT)
-		Ventile::engine_running = false;
-
-	return;
-}
-
-Ventile::Application* CreateApplication() {
-	return new Sandbox();
-}

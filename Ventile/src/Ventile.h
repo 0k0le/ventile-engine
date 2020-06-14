@@ -1,5 +1,3 @@
-#pragma once
-
   /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
  /*--/ Vulkan API Test Software /--*/   /**/   /*-----/----- Ventile.h ----/-----*/
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
@@ -38,6 +36,8 @@
 // Evaluation Copy. Build 19631.mn_release.200514-1410
 // -------------------
 
+#pragma once
+
 // Force windows subsystem
 #ifdef _WIN32
 #pragma comment(linker, "/SUBSYSTEM:CONSOLE")
@@ -59,6 +59,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <signal.h>
 
 // Windows Headers
 // -------------------
@@ -74,8 +75,18 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
 #include <strings.h>
+#include <stddef.h>
+#include <pthread.h>
+#include <dirent.h>
+
+// KBD Event headers
+#include <linux/input.h>
+#include <linux/input-event-codes.h>
 #endif
+
+#undef ERR
 
 // Vulkan Headers
 // -------------------
@@ -92,18 +103,29 @@ using std::cerr;
 
 // Set process exit function
 #ifdef _WIN32
+#define SLEEP(x) (Sleep(x))
 #define noinline __declspec(noinline)
 #define EXIT(exitcode) ExitProcess(exitcode)
-#else
-#define noinline __attribute__((noinline))
-#define EXIT(exitcode) exit(exitcode)
-#endif
-
-// Print error to stderr
-#ifdef _WIN32
 #define ERR(format, ...) fprintf(stderr, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #else
+#define INPUT_DEVICE_DIRECTORY "/dev/input/by-path/"
+#define DEVICE_FILE_DIR_LENGTH 4096
+#define SLEEP(x) (sleep(x/1000))
+#define noinline __attribute__((noinline))
+#define EXIT(exitcode) exit(exitcode)
 #define ERR(format, ...) fprintf(stderr, "GNU --> Fatal error in %s(): " format "\n%s\n", __FUNCTION__, ##__VA_ARGS__, strerror(errno))
+#define MAX_KEY 255
+
+typedef void* (*pthread_func_t)(void*);
+#endif
+
+#if !defined(_WIN32)
+typedef struct kbd_thread_info {
+	pthread_t tid;
+	pthread_attr_t attr;
+	int kbd_fd;
+
+}kbd_thread_info, * p_kbd_thread_info;
 #endif
 
 // Print error and quit
@@ -114,6 +136,7 @@ using std::cerr;
 
 #define ERRQ(format, ...) ERRQC(EXIT_FAILURE, format, ##__VA_ARGS__)
 
+// Handle IMPORT/EXPORT MACRO
 #ifdef _WIN32
 #ifdef _ENGINE_DLL
 #define VENTILEAPI __declspec(dllexport)
@@ -121,23 +144,12 @@ using std::cerr;
 #define VENTILEAPI __declspec(dllimport)
 #endif
 #else
-#ifdef _ENGINE_DLL
-#define VENTILEAPI __attribute__((visibility("default")))
-#else
-#define VENTILEAPI extern
-#endif
+// Note: Linux doesnt need dllimport/dllexport or "default"/extern when working with dynamic libs
+#define VENTILEAPI
 #endif
 
-namespace Ventrile {
-	namespace System {
-		// MALLOCS
-		// -------------------
-		VENTILEAPI void* ec_malloc(const unsigned int nBytes);
+// Major.Minor.Release
+#define ENGINE_VERSION "0.001.00"
 
-		// I/O
-		// -------------------
-		VENTILEAPI unsigned int get_file_size(const int fd, const long offset = 0);
-		VENTILEAPI int open_file(const char* const file_name, const int flags, char** buf = NULL, bool isproc = false);
-	}
-
-}
+#include "Application.h"
+#include "EntryPoint.h"

@@ -38,7 +38,7 @@
 
 #include "Ventile.h"
 
-namespace Ventrile {
+namespace Ventile {
     namespace System {
         // MALLOCS
         // -------------------
@@ -65,7 +65,7 @@ namespace Ventrile {
             return flen;
         }
 
-        int open_file(const char* const file_name, const int flags, char** buf, bool isproc) {
+        int open_file(const char* const file_name, const int flags, char** buf, const bool isproc) {
             int fd = 0;
 
             if ((fd = open(file_name, flags)) == -1)
@@ -87,7 +87,7 @@ namespace Ventrile {
                 }
                 else {
                     // Shitty solution but fuck it, not gonna waste an hour of my life on this shit
-                    register char temp_buf = 0;
+                    char temp_buf = 0;
                     register unsigned int byte_count = 0;
                     register int ret = 0;
 
@@ -116,6 +116,23 @@ namespace Ventrile {
 
             return fd;
         }
-    }
 
+#ifdef _WIN32
+        bool is_key_pressed(const bool all, const int vk) {
+            if (all) {
+                for (int i = 0; i < 255; i++) {
+                    if (GetAsyncKeyState(i) & (1 << 15)) {
+                        return true;
+                    }
+                }
+            }
+            else {
+                if (GetAsyncKeyState(vk) & (1 << 15))
+                    return true;
+            }
+
+            return false;
+        }
+#endif
+    }
 }
