@@ -40,7 +40,7 @@
 
 // Force windows subsystem
 #ifdef _WIN32
-#pragma comment(linker, "/SUBSYSTEM:CONSOLE")
+#pragma comment(linker, "/SUBSYSTEM:WINDOWS")
 #endif
 
 // Allow unsafe/POSIX functions
@@ -126,6 +126,13 @@ typedef struct kbd_thread_info {
 	int kbd_fd;
 
 }kbd_thread_info, * p_kbd_thread_info;
+
+#define MOUSE_EV_OFFSET (BTN_GEAR_UP - BTN_MISC)
+
+typedef struct mouse_state {
+	unsigned int button_state[MOUSE_EV_OFFSET];
+	unsigned int x_pos, y_pos;
+}mouse_state, * p_mouse_state;
 #endif
 
 // Print error and quit
@@ -148,8 +155,29 @@ typedef struct kbd_thread_info {
 #define VENTILEAPI
 #endif
 
+#ifdef _DEBUG
+#define DEBUG(format, ...) ({ \
+    printf("DEBUG --> %s(): " format "\n", __FUNCTION__, ##__VA_ARGS__); \
+})
+#else
+#define DEBUG(format, ...)
+#endif
+
 // Major.Minor.Release
 #define ENGINE_VERSION "0.001.00"
+
+namespace Ventile {
+	namespace System {
+		// MALLOCS
+		// -------------------
+		VENTILEAPI void* ec_malloc(const unsigned int nBytes);
+
+		// I/O
+		// -------------------
+		VENTILEAPI unsigned int get_file_size(const int fd, const long offset = 0);
+		VENTILEAPI int open_file(const char* const file_name, const int flags, char** buf = NULL, const bool isproc = false);
+	}
+}
 
 #include "Application.h"
 #include "EntryPoint.h"

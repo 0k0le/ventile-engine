@@ -1,9 +1,47 @@
-#include "Ventile.h"
+/*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
+/*--/ Vulkan API Test Software /--*/   /**/   /*-----/--- Keyboard.cpp ---/-----*/
+/*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
+  /*------------------------/-----------------------------------/-----------------*/
+ /*-- Matthew Todd Geiger -/- matthewgeigersoftware@gmail.com -/- 425-363-0746 --*/
+/*------------------------/-----------------------------------/-----------------*/
 
-#ifndef _WIN32
+/*
+	This file is part of Vulkan Engine Test.
+
+	Vulkan Engine Test is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Vulkan Engine Test is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Vulkan Engine Test.  If not, see <https://www.gnu.org/licenses/>.
+
+	signature of Matthew Geiger 5 June 2020
+	Matthew Geiger, Founder of Freespace Software
+*/
+
+// DEVELOPMENT INFORMATION
+// -------------------
+// Vulkan SDK : 1.2.141.0
+//				v.w.xxx.0
+// -------------------
+// nVidia Driver : 450.82
+// -------------------
+// Windows 10 Home
+// Evaluation Copy. Build 19631.mn_release.200514-1410
+// ---
+
+#include "Ventile.h"
 
 namespace Ventile {
 	namespace System {
+#ifndef _WIN32
+
 		void Keyboard::sig_call(int sig) {
 			if (sig == SIGSEGV)
 				pthread_exit(NULL);
@@ -17,7 +55,7 @@ namespace Ventile {
 			memset(device_file, 0, DEVICE_FILE_DIR_LENGTH);
 
 			if ((dp = opendir(INPUT_DEVICE_DIRECTORY)) == NULL)
-				ERR("Failed to open directory: " INPUT_DEVICE_DIRECTORY "\n");
+				ERRQ("Failed to open directory: " INPUT_DEVICE_DIRECTORY "\n");
 
 			while ((ep = readdir(dp))) {
 				if (strstr(ep->d_name, "kbd") && strlen(ep->d_name) < DEVICE_FILE_DIR_LENGTH) {
@@ -36,12 +74,12 @@ namespace Ventile {
 
 			// Read only
 			if ((fd = open(kbd_dev, O_RDONLY | O_NOCTTY)) == -1)
-				ERR("Failed to open keyboard device!");
+				ERRQ("Failed to open keyboard device!");
 
 			// Non blocking
 			int flags = fcntl(fd, F_GETFL, 0);
 			if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-				ERR("Failed to enable non-blocking!");
+				ERRQ("Failed to enable non-blocking!");
 
 			return fd;
 		}
@@ -66,13 +104,13 @@ namespace Ventile {
 
 		char Keyboard::is_key_pressed(const char any, const unsigned short code, const int kbd_fd) {
 			char not_blocking = 1;
-			struct input_event ie = { 0 };
+			struct input_event ie;
 
 			// Read data from device until EV_KEY event is found or continue if no data is readable
 			do {
 				if (read(kbd_fd, &ie, sizeof(ie)) <= 0) {
 					if (errno != EAGAIN)
-						ERR("Failed to read from KBD Device!");
+						ERRQ("Failed to read from KBD Device!");
 
 					not_blocking = 0;
 				}
@@ -122,7 +160,7 @@ namespace Ventile {
 			pthread_attr_setschedpolicy(&(kinfo.attr), SCHED_IDLE);
 
 			if (pthread_create(&(kinfo.tid), &(kinfo.attr), (pthread_func_t)(&key_state_thread), this) < 0)
-				ERR("Failed to launch key state thread!");
+				ERRQ("Failed to launch key state thread!");
 		}
 
 		void Keyboard::destroy_key_state_thread() {
@@ -148,7 +186,25 @@ namespace Ventile {
 			destroy_key_state_thread();
 		}
 
-	}
-}
+#else 
+
+		bool is_key_pressed(const bool all, const int vk) {
+			if (all) {
+				for (int i = 0; i < 255; i++) {
+					if (GetAsyncKeyState(i) & (1 << 15)) {
+						return true;
+					}
+				}
+			}
+			else {
+				if (GetAsyncKeyState(vk) & (1 << 15))
+					return true;
+			}
+
+			return false;
+		}
 
 #endif
+
+	}
+}

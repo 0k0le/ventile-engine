@@ -116,23 +116,5 @@ namespace Ventile {
 
             return fd;
         }
-
-#ifdef _WIN32
-        bool is_key_pressed(const bool all, const int vk) {
-            if (all) {
-                for (int i = 0; i < 255; i++) {
-                    if (GetAsyncKeyState(i) & (1 << 15)) {
-                        return true;
-                    }
-                }
-            }
-            else {
-                if (GetAsyncKeyState(vk) & (1 << 15))
-                    return true;
-            }
-
-            return false;
-        }
-#endif
     }
 }

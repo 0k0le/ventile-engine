@@ -43,8 +43,36 @@
 extern Ventile::Application* CreateApplication();
 extern void SignalHandler(int signal);
 
-int main(const int argc, const char** const argv) {
-	UNUSED(argc); UNUSED(argv);
+#ifdef _WIN32
+
+int WINAPI WinMain(	HINSTANCE hInstance,
+					HINSTANCE hPrevInstance,
+					LPSTR     lpCmdLine,
+					int       nShowCmd) {
+	UNUSED(hInstance); UNUSED(hPrevInstance); UNUSED(lpCmdLine); UNUSED(nShowCmd);
+
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+
+	// Setup signal handling
+	if (signal(SIGINT, SignalHandler) == SIG_ERR)
+		ERRQ("Failed to initialize signal handler");
+
+	// Spawn application
+	Ventile::Application* app = CreateApplication();
+	app->run();
+	delete app;
+
+	FreeConsole();
+
+	EXIT(EXIT_SUCCESS);
+}
+
+#else
+
+int main(const int argc, const char** const argv, const char** const envp) {
+	UNUSED(argc); UNUSED(argv); UNUSED(envp);
 
 	// Setup signal handling
 	if (signal(SIGINT, SignalHandler) == SIG_ERR)
@@ -57,5 +85,7 @@ int main(const int argc, const char** const argv) {
 
 	EXIT(EXIT_SUCCESS);
 }
+
+#endif
 
 #endif

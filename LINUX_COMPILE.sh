@@ -2,9 +2,10 @@
 g++ -D_ENGINE_DLL Ventile/src/Ventile.cpp -lpthread -c -Wall -Wextra -fpic -o bin-int/Debug-x64/Ventile/ventile.o
 g++ -D_ENGINE_DLL Ventile/src/Application.cpp -lpthread -c -Wall -Wextra -fpic -o bin-int/Debug-x64/Ventile/application.o
 g++ -D_ENGINE_DLL Ventile/src/Keyboard.cpp -lpthread -c -Wall -Wextra -fpic -o bin-int/Debug-x64/Ventile/keyboard.o
+g++ -D_ENGINE_DLL Ventile/src/Mouse.cpp -lpthread -c -Wall -Wextra -fpic -o bin-int/Debug-x64/Ventile/mouse.o
 
 # Compile engine - BIN
-g++ -shared -o bin/Debug-x64/Ventile/libventile.so bin-int/Debug-x64/Ventile/ventile.o bin-int/Debug-x64/Ventile/application.o bin-int/Debug-x64/Ventile/keyboard.o
+g++ -shared -o bin/Debug-x64/Ventile/libventile.so bin-int/Debug-x64/Ventile/ventile.o bin-int/Debug-x64/Ventile/application.o bin-int/Debug-x64/Ventile/keyboard.o bin-int/Debug-x64/Ventile/mouse.o
 
 sudo cp bin/Debug-x64/Ventile/libventile.so /usr/lib
 

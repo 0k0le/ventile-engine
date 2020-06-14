@@ -45,6 +45,7 @@ class Sandbox : public Ventile::Application {
 public:
 	Sandbox() {
 		printf("Ventile Example Application\n");
+		// Register engine kill key
 #ifdef _WIN32
 		Ventile::kill_key = VK_ESCAPE;
 #else
@@ -58,6 +59,7 @@ public:
 	}
 };
 
+// Register engine signal handler
 void SignalHandler(int signal) {
 	if (signal == SIGINT)
 		Ventile::engine_running = false;
@@ -65,6 +67,7 @@ void SignalHandler(int signal) {
 	return;
 }
 
+// Register engine application launcher
 Ventile::Application* CreateApplication() {
 	return new Sandbox();
 }
