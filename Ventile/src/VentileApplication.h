@@ -52,18 +52,14 @@ static inline int vMainLoop(Ventile::Application* app);
 
 namespace Ventile {
 	VENTILEAPI bool engine_running;
-
-#ifdef _WIN32
-	VENTILEAPI int kill_key;
-#else
-	VENTILEAPI unsigned short kill_key;
-#endif
+	VENTILEAPI KILLKEYTYPE kill_key;
+	VENTILEAPI System::Logger* logger;
 }
 
 class Sandbox : public Ventile::Application {
 public:
 	Sandbox() {
-		logger->log(LOGSUCCESS, "Launching Sandbox application startup procedure");
+		DEBUG(Ventile::logger, "Launching Sandbox application startup procedure");
 
 		// Register engine kill key
 #ifdef _WIN32
@@ -74,7 +70,7 @@ public:
 	}
 
 	void deconstruct() {
-		logger->log(LOGSUCCESS, "Launching Sandbox application shutdown procedure");
+		DEBUG(Ventile::logger, "Launching Sandbox application shutdown procedure");
 	}
 
 	// GAME LOOP

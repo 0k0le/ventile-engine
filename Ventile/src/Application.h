@@ -43,12 +43,13 @@
 #include "Mouse.h"
 
 namespace Ventile {
+
+
 	class VENTILEAPI Application {
 
 	public:
 		System::Keyboard* keyboard;
 		System::Mouse* mouse;
-		System::Logger* logger;
 
 		Application();
 		~Application();

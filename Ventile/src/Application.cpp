@@ -41,11 +41,14 @@
 namespace Ventile {
 	VENTILEAPI bool engine_running = true;
     VENTILEAPI KILLKEYTYPE kill_key = 0;
+    VENTILEAPI System::Logger* logger;
 
 	Application::Application() {
+        // Logger must be created before other classes
+        logger = new System::Logger();
+
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
-        logger = new System::Logger();
 
         logger->log(LOGSUCCESS, "Ventile Engine Version: " ENGINE_VERSION "\n");
 	}

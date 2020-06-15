@@ -39,6 +39,8 @@
 #include "Ventile.h"
 
 namespace Ventile {
+	extern System::Logger* logger;
+
 	namespace System {
 #ifndef _WIN32
 
@@ -55,7 +57,7 @@ namespace Ventile {
 			memset(device_file, 0, DEVICE_FILE_DIR_LENGTH);
 
 			if ((dp = opendir(INPUT_DEVICE_DIRECTORY)) == NULL)
-				ERRQ("Failed to open directory: " INPUT_DEVICE_DIRECTORY "\n");
+				ERRLQ(logger, "Failed to open directory: " INPUT_DEVICE_DIRECTORY "\n");
 
 			while ((ep = readdir(dp))) {
 				if (strstr(ep->d_name, "kbd") && strlen(ep->d_name) < DEVICE_FILE_DIR_LENGTH) {
@@ -74,12 +76,12 @@ namespace Ventile {
 
 			// Read only
 			if ((fd = open(kbd_dev, O_RDONLY | O_NOCTTY)) == -1)
-				ERRQ("Failed to open keyboard device!");
+				ERRLQ(logger, "Failed to open keyboard device!");
 
 			// Non blocking
 			int flags = fcntl(fd, F_GETFL, 0);
 			if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-				ERRQ("Failed to enable non-blocking!");
+				ERRLQ(logger, "Failed to enable non-blocking!");
 
 			return fd;
 		}
@@ -110,7 +112,7 @@ namespace Ventile {
 			do {
 				if (read(kbd_fd, &ie, sizeof(ie)) <= 0) {
 					if (errno != EAGAIN)
-						ERRQ("Failed to read from KBD Device!");
+						ERRLQ(logger, "Failed to read from KBD Device!");
 
 					not_blocking = 0;
 				}
@@ -120,7 +122,7 @@ namespace Ventile {
 			// Copy key data to array
 			if (not_blocking) {
 				pthread_mutex_lock(&key_state_mutex);
-#ifdef _DEBUG
+#ifdef _DEBUG__KEYBOARD
 				print_input_event(&ie);
 #endif
 				key_state[ie.code] = ie.value;
@@ -160,7 +162,7 @@ namespace Ventile {
 			pthread_attr_setschedpolicy(&(kinfo.attr), SCHED_IDLE);
 
 			if (pthread_create(&(kinfo.tid), &(kinfo.attr), (pthread_func_t)(&key_state_thread), this) < 0)
-				ERRQ("Failed to launch key state thread!");
+				ERRLQ(logger, "Failed to launch key state thread!");
 		}
 
 		void Keyboard::destroy_key_state_thread() {
@@ -173,9 +175,7 @@ namespace Ventile {
 
 			if (kinfo.kbd_fd > 0) close(kinfo.kbd_fd);
 
-#ifdef _DEBUG
-			printf("Keyboard device shutdown...\n");
-#endif
+			DEBUG(logger, "Keyboard device shutdown...\n");
 		}
 
 		Keyboard::Keyboard() {

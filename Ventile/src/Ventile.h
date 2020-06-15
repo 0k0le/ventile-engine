@@ -38,6 +38,11 @@
 
 #pragma once
 
+// DEBUG BUILD FORCED
+#ifndef _DEBUG
+#define _DEBUG
+#endif
+
 // Force windows subsystem
 #ifdef _WIN32
 #pragma comment(linker, "/SUBSYSTEM:WINDOWS")
@@ -105,6 +110,9 @@ using std::cerr;
 // -------------------
 #define UNUSED(x)((void)(x)) // Ignore compiler warnings : Use rarely
 
+#define LOGFAIL 0
+#define LOGSUCCESS 1
+
 // Set process exit function
 #ifdef _WIN32
 #define KILLKEYPRINTF "%lu"
@@ -113,6 +121,7 @@ using std::cerr;
 #define noinline __declspec(noinline)
 #define EXIT(exitcode) ExitProcess(exitcode)
 #define ERR(format, ...) fprintf(stderr, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
+#define ERRL(logger, format, ...) logger->log(LOGFAIL, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #else
 #define KILLKEYPRINTF "%u"
 #define KILLKEYTYPE unsigned short
@@ -122,6 +131,7 @@ using std::cerr;
 #define noinline __attribute__((noinline))
 #define EXIT(exitcode) exit(exitcode)
 #define ERR(format, ...) fprintf(stderr, "GNU --> Fatal error in %s(): " format "\n%s\n", __FUNCTION__, ##__VA_ARGS__, strerror(errno))
+#define ERRL(logger, format, ...) logger->log(LOGFAIL, "GNU --> Fatal error in %s(): " format "\n%s\n", __FUNCTION__, ##__VA_ARGS__, strerror(errno))
 #define MAX_KEY 255
 
 typedef void* (*pthread_func_t)(void*);
@@ -152,6 +162,15 @@ typedef struct mouse_state {
 
 #define ERRQ(format, ...) ERRQC(EXIT_FAILURE, format, ##__VA_ARGS__)
 
+#define ERRLQC(logger, exitcode, format, ...) {\
+	if(logger != nullptr) ERRL(logger, format, ##__VA_ARGS__); \
+	else ERR(format, ##__VA_ARGS__); \
+    fflush(stdout); fflush(stderr); \
+	SLEEP(5000); \
+    EXIT(exitcode); }
+
+#define ERRLQ(logger, format, ...) ERRLQC(logger, EXIT_FAILURE, format, ##__VA_ARGS__)
+
 // Handle IMPORT/EXPORT MACRO
 #ifdef _WIN32
 #ifdef _ENGINE_DLL
@@ -165,9 +184,10 @@ typedef struct mouse_state {
 #endif
 
 #ifdef _DEBUG
-#define DEBUG(format, ...) ({ \
-    printf("DEBUG --> %s(): " format "\n", __FUNCTION__, ##__VA_ARGS__); \
-})
+#define DEBUG(logger, format, ...) { \
+	if(logger == nullptr) printf("DEBUG --> %s(): " format "\n", __FUNCTION__, ##__VA_ARGS__); \
+	else logger->log(LOGSUCCESS, "DEBUG --> %s(): " format "\n", __FUNCTION__, ##__VA_ARGS__); \
+}
 #else
 #define DEBUG(format, ...)
 #endif
@@ -187,9 +207,6 @@ namespace Ventile {
 		VENTILEAPI int open_file(const char* const file_name, const int flags, char** buf = NULL, const bool isproc = false);
 	}
 }
-
-#define LOGFAIL 0
-#define LOGSUCCESS 1
 
 #include "Application.h"
 #include "EntryPoint.h"

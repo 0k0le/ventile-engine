@@ -1,5 +1,3 @@
-#include "Ventile.h"
-
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
 /*--/ Vulkan API Test Software /--*/   /**/   /*-----/---- Mouse.cpp -----/-----*/
 /*--/--------------------------/--*/   /**/   /*-----/--------------------/-----*/
@@ -38,7 +36,11 @@
 // Evaluation Copy. Build 19631.mn_release.200514-1410
 // -------------------
 
+#include "Ventile.h"
+
 namespace Ventile {
+	extern System::Logger* logger;
+
 	namespace System {
 #ifndef _WIN32
 		void Mouse::get_mouse_event(Mouse* mouse) {
@@ -47,7 +49,7 @@ namespace Ventile {
 
 			if (read(mouse->fd, &ie, sizeof(ie)) == -1) {
 				if (errno != EAGAIN)
-					ERRQ("Failed to read mse device file!");
+					ERRLQ(logger, "Failed to read mse device file!");
 
 				return;
 			}
@@ -96,7 +98,7 @@ namespace Ventile {
 			memset(device_file, 0, DEVICE_FILE_DIR_LENGTH);
 
 			if ((dp = opendir(INPUT_DEVICE_DIRECTORY)) == NULL)
-				ERRQ("Failed to open directory: " INPUT_DEVICE_DIRECTORY "\n");
+				ERRLQ(logger, "Failed to open directory: " INPUT_DEVICE_DIRECTORY "\n");
 
 			while ((ep = readdir(dp))) {
 				if (strstr(ep->d_name, "mouse") && strstr(ep->d_name, "pci") == NULL && strlen(ep->d_name) < DEVICE_FILE_DIR_LENGTH) {
@@ -107,24 +109,24 @@ namespace Ventile {
 
 			closedir(dp);
 
-			DEBUG("Device File \"%s\"", device_file);
+			DEBUG(logger, "Device File \"%s\"", device_file);
 
 			return device_file;
 		}
 
-		int Mouse::open_mse(const char* const mse_dev) {
+		int Mouse::open_mse(const char* mse_dev) {
 			int fd = 0;
 
 			// Read only
 			if ((fd = open(mse_dev, O_RDONLY | O_NOCTTY)) == -1)
-				ERRQ("Failed to open mouse device!");
+				ERRLQ(logger, "Failed to open mouse device!");
 
 			// Non blocking
 			int flags = fcntl(fd, F_GETFL, 0);
 			if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
-				ERRQ("Failed to enable non-blocking!");
+				ERRLQ(logger, "Failed to enable non-blocking!");
 
-			DEBUG("Opened device file \"%s\" successfully!", mse_dev);
+			DEBUG(logger, "Opened device file \"%s\" successfully!", mse_dev);
 
 			return fd;
 		}
@@ -185,7 +187,7 @@ namespace Ventile {
 
 			// Launch thread
 			if (pthread_create(&tid, &attr, (pthread_func_t)mouse_state_thread, this) < 0)
-				ERRQ("Failed to launch mouse state thread!");
+				ERRLQ(logger, "Failed to launch mouse state thread!");
 		}
 
 		Mouse::~Mouse() {
@@ -198,14 +200,14 @@ namespace Ventile {
 
 			if (fd > 0) close(fd);
 
-			DEBUG("Mouse class destroyed...");
+			DEBUG(logger, "Mouse class destroyed...");
 		}
 #else
 		LONG Mouse::get_mouse_x() {
 			POINT pointInfo;
 
 			if (GetCursorPos(&pointInfo) == FALSE)
-				ERRQ("Failed to get cursor x position!");
+				ERRLQ(logger, "Failed to get cursor x position!");
 
 			return pointInfo.x;
 		}
@@ -214,7 +216,7 @@ namespace Ventile {
 			POINT pointInfo;
 
 			if (GetCursorPos(&pointInfo) == FALSE)
-				ERRQ("Failed to get cursor y position!");
+				ERRLQ(logger, "Failed to get cursor y position!");
 
 			return pointInfo.y;
 		}

@@ -2,26 +2,29 @@
 
 namespace Ventile {
 	namespace System {
-		void Logger::log(int log_code, const char* const fmt, ...) {
-			va_list args;
-			va_start(args, fmt);
+		void Logger::log(int log_code, const char* fmt, ...) {
+			va_list arg, arg2;
+			va_start(arg, fmt);
+			va_copy(arg2, arg);
 
 			if (log_code == LOGFAIL) {
 				fprintf(stderr, "LOG -- ERROR --> ");
-				vfprintf(stderr, fmt, args);
+				vfprintf(stderr, fmt, arg);
 				fprintf(stderr, "\n");
 			}
 			else {
 				fprintf(stdout, "LOG -- GENERAL --> ");
-				vfprintf(stdout, fmt, args);
+				vfprintf(stdout, fmt, arg);
 				fprintf(stdout, "\n");
 			}
 
+			va_end(arg);
+
 			fprintf(fp, "LOG -- GENERAL --> ");
-			vfprintf(fp, fmt, args);
+			vfprintf(fp, fmt, arg2);
 			fprintf(fp, "\n");
 
-			va_end(args);
+			va_end(arg2);
 		}
 
 		Logger::Logger(const char* const file_name) {

@@ -11,7 +11,7 @@ namespace Ventile {
 			Logger(const char* const file_name = "log.txt");
 			~Logger();
 
-			void log(int log_code, const char* const fmt, ...);
+			void log(int log_code, const char* fmt, ...);
 		};
 	}
 }
