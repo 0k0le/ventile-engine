@@ -48,7 +48,7 @@ extern void SignalHandler(int signal);
 int WINAPI WinMain(	HINSTANCE hInstance,
 					HINSTANCE hPrevInstance,
 					LPSTR     lpCmdLine,
-					int       nShowCmd) {
+					int       nShowCmd ) {
 	UNUSED(hInstance); UNUSED(hPrevInstance); UNUSED(lpCmdLine); UNUSED(nShowCmd);
 
 	AllocConsole();
@@ -61,12 +61,12 @@ int WINAPI WinMain(	HINSTANCE hInstance,
 
 	// Spawn application
 	Ventile::Application* app = CreateApplication();
-	app->run();
+	int ret = app->run();
 	delete app;
 
 	FreeConsole();
 
-	EXIT(EXIT_SUCCESS);
+	EXIT(ret);
 }
 
 #else
@@ -80,10 +80,10 @@ int main(const int argc, const char** const argv, const char** const envp) {
 
 	// Spawn application
 	Ventile::Application* app = CreateApplication();
-	app->run();
+	int ret = app->run();
 	delete app;
 
-	EXIT(EXIT_SUCCESS);
+	EXIT(ret);
 }
 
 #endif

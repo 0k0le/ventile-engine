@@ -52,11 +52,11 @@ namespace Ventile {
 
 		Application();
 		~Application();
-		void run();
+		int run();
 
 		// Application controlled main loop
-		virtual void app_proc() {
-			return;
+		virtual int app_proc() {
+			return EXIT_SUCCESS;
 		}
 	};
 }

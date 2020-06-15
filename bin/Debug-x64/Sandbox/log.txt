@@ -1,4 +1,6 @@
 LOG -- GENERAL --> Ventile Engine Version: 0.001.00
 
+LOG -- GENERAL --> Launching Sandbox application startup procedure
+LOG -- GENERAL --> Launching Sandbox application shutdown procedure
 LOG -- GENERAL --> Engine shutting down
 

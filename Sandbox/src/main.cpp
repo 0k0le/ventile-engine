@@ -39,22 +39,20 @@
 #include "../../Ventile/src/VentileApplication.h"
 
 #ifdef _WIN32
-#define KILLCODE1 VK_SHIFT
-#define KILLCODE2 VK_CONTROL
+#define KILLCODE VK_ESCAPE
 #else
-#define KILLCODE1 KEY_LEFTSHIFT
-#define KILLCODE2 KEY_LEFTCTRL
+#define KILLCODE KEY_ESC
 #endif
 
 // Application main loop
-static inline bool VentileApplicationMainLoop(register Ventile::Application* app) {
+static inline int vMainLoop(register Ventile::Application* app) {
 	// Disable mouse coords
 	printf("X --> " KILLKEYPRINTF " | Y --> " KILLKEYPRINTF "\n",
 		app->mouse->get_mouse_x(), app->mouse->get_mouse_y());
 
 	// Kill engine if CTRL and SHIFT are pressed
-	if (app->keyboard->get_key_state(KILLCODE1) && app->keyboard->get_key_state(KILLCODE2))
-		return false;
+	if (app->keyboard->get_key_state(KILLCODE))
+		return EXIT_SUCCESS;
 
-	return true;
+	return EXIT_LOOP;
 }

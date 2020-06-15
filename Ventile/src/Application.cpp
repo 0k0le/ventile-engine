@@ -43,7 +43,6 @@ namespace Ventile {
     VENTILEAPI KILLKEYTYPE kill_key = 0;
 
 	Application::Application() {
-
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
         logger = new System::Logger();
@@ -52,7 +51,7 @@ namespace Ventile {
 	}
 
 	Application::~Application() {
-		logger->log(LOGSUCCESS, "Engine shutting down\n");
+        logger->log(LOGSUCCESS, "Engine shutting down\n");
 
         delete keyboard;
         delete mouse;
@@ -61,13 +60,16 @@ namespace Ventile {
         SLEEP(1000);
 	}
 
-	void Application::run() {
+	int Application::run() {
+        int ret = 0;
 
         while (engine_running) {
             if (kill_key && keyboard->get_key_state(kill_key))
                 engine_running = false;
 
-            app_proc();
+            ret = app_proc();
         }
+
+        return ret;
 	}
 }

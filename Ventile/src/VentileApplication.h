@@ -42,7 +42,7 @@
 #include "Ventile.h"
 #undef VENTILEAPI
 
-static inline bool VentileApplicationMainLoop(Ventile::Application* app);
+static inline int vMainLoop(Ventile::Application* app);
 
 #ifdef  _WIN32
 #define VENTILEAPI __declspec(dllimport)
@@ -63,24 +63,30 @@ namespace Ventile {
 class Sandbox : public Ventile::Application {
 public:
 	Sandbox() {
-		logger->log(LOGSUCCESS, "Launching Sandbox\n");
+		logger->log(LOGSUCCESS, "Launching Sandbox application startup procedure");
+
 		// Register engine kill key
 #ifdef _WIN32
-		Ventile::kill_key = VK_ESCAPE;
+		Ventile::kill_key = VK_F1;
 #else
-		Ventile::kill_key = KEY_ESC;
+		Ventile::kill_key = KEY_F1;
 #endif
 	}
 
-	~Sandbox() {
-		//printf("Ventile Example Application shutting down\n");
-		fflush(stdout);
+	void deconstruct() {
+		logger->log(LOGSUCCESS, "Launching Sandbox application shutdown procedure");
 	}
 
 	// GAME LOOP
-	void app_proc() { 
-		if (!VentileApplicationMainLoop(this))
+	int app_proc() {
+		int ret = 0;
+
+		if ((ret = vMainLoop(this)) != EXIT_LOOP) {
 			Ventile::engine_running = false;
+			deconstruct();
+		}
+
+		return ret;
 	}
 };
 

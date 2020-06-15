@@ -49,6 +49,8 @@
 #define _CRT_NONSTDC_NO_DEPRECATE
 #endif
 
+#define EXIT_LOOP 0x2
+
 // C++ Headers
 // -------------------
 #include <iostream>
@@ -145,6 +147,7 @@ typedef struct mouse_state {
 #define ERRQC(exitcode, format, ...) {\
     ERR(format, ##__VA_ARGS__); \
     fflush(stdout); fflush(stderr); \
+	SLEEP(5000); \
     EXIT(exitcode); }
 
 #define ERRQ(format, ...) ERRQC(EXIT_FAILURE, format, ##__VA_ARGS__)
