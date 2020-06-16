@@ -46,7 +46,6 @@ namespace Ventile {
 
 
 	class VENTILEAPI Application {
-
 	public:
 		System::Keyboard* keyboard;
 		System::Mouse* mouse;
@@ -56,7 +55,8 @@ namespace Ventile {
 		int run();
 
 		// Application controlled main loop
-		virtual int app_proc() {
+		virtual int app_proc(double deltaTime) {
+			UNUSED(deltaTime);
 			return EXIT_SUCCESS;
 		}
 	};

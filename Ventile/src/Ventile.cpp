@@ -117,5 +117,27 @@ namespace Ventile {
 
             return fd;
         }
+
+        // Percision Time
+        // -------------------
+        VENTILEAPI PERCISIONTIME get_percision_time() {
+#ifdef _WIN32
+            LARGE_INTEGER frequency, time;
+            if (::QueryPerformanceFrequency(&frequency) == FALSE)
+                return -1;
+            if (::QueryPerformanceCounter(&time) == FALSE)
+                return -2;
+
+            return static_cast<PERCISIONTIME>(time.QuadPart) / frequency.QuadPart;
+#else
+            struct timespec ts;
+
+            clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+
+            return static_cast<PERCISIONTIME>((ts.tv_sec)
+                + (ts.tv_nsec)
+                / BILLION);
+#endif
+        }
     }
 }

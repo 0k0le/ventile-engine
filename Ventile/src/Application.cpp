@@ -50,11 +50,11 @@ namespace Ventile {
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
 
-        logger->log(LOGSUCCESS, "Ventile Engine Version: " ENGINE_VERSION "\n");
+        DEBUG(logger, "Ventile Engine Version: " ENGINE_VERSION "\n");
 	}
 
 	Application::~Application() {
-        logger->log(LOGSUCCESS, "Engine shutting down\n");
+        DEBUG(logger, "Engine shutting down\n");
 
         delete keyboard;
         delete mouse;
@@ -64,13 +64,23 @@ namespace Ventile {
 	}
 
 	int Application::run() {
+        double start, end;
+        double fDeltaTime = 0.0f;
         int ret = 0;
 
         while (engine_running) {
+            if ((start = System::get_percision_time()) < 0)
+                DEBUG(logger, "Failed to get percision time start!");
+
             if (kill_key && keyboard->get_key_state(kill_key))
                 engine_running = false;
 
-            ret = app_proc();
+            ret = app_proc(fDeltaTime);
+
+            if ((end = System::get_percision_time()) < 0)
+                DEBUG(logger, "Failed to get percision time end!");
+
+            fDeltaTime = end - start;
         }
 
         return ret;

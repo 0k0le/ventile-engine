@@ -42,7 +42,7 @@
 #include "Ventile.h"
 #undef VENTILEAPI
 
-static inline int vMainLoop(Ventile::Application* app);
+static inline int vMainLoop(Ventile::Application* app, double deltaTime);
 
 #ifdef  _WIN32
 #define VENTILEAPI __declspec(dllimport)
@@ -74,10 +74,10 @@ public:
 	}
 
 	// GAME LOOP
-	int app_proc() {
+	int app_proc(double deltaTime) {
 		int ret = 0;
 
-		if ((ret = vMainLoop(this)) != EXIT_LOOP) {
+		if ((ret = vMainLoop(this, deltaTime)) != EXIT_LOOP) {
 			Ventile::engine_running = false;
 			deconstruct();
 		}

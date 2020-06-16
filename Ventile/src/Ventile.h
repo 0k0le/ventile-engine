@@ -54,11 +54,16 @@
 #define _CRT_NONSTDC_NO_DEPRECATE
 #endif
 
+#ifndef _WIN32
+#define _DEFAULT_SOURCE
+#endif
+
 #define EXIT_LOOP 0x2
 
 // C++ Headers
 // -------------------
 #include <iostream>
+#include <chrono>
 
 // C Headers
 // -------------------
@@ -68,6 +73,7 @@
 #include <string.h>
 #include <signal.h>
 #include <stdarg.h>
+#include <sys/timeb.h>
 
 // Windows Headers
 // -------------------
@@ -85,10 +91,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
 #include <strings.h>
 #include <stddef.h>
 #include <pthread.h>
 #include <dirent.h>
+#include <bits/stdc++.h>
 
 // KBD Event headers
 #include <linux/input.h>
@@ -113,8 +121,11 @@ using std::cerr;
 #define LOGFAIL 0
 #define LOGSUCCESS 1
 
+#define PERCISIONTIME double
+
 // Set process exit function
 #ifdef _WIN32
+#define MOUSERETTYPE LONG
 #define KILLKEYPRINTF "%lu"
 #define KILLKEYTYPE int
 #define SLEEP(x) (Sleep(x))
@@ -123,11 +134,12 @@ using std::cerr;
 #define ERR(format, ...) fprintf(stderr, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #define ERRL(logger, format, ...) logger->log(LOGFAIL, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #else
+#define MOUSERETTYPE unsigned int
 #define KILLKEYPRINTF "%u"
 #define KILLKEYTYPE unsigned short
 #define INPUT_DEVICE_DIRECTORY "/dev/input/by-path/"
 #define DEVICE_FILE_DIR_LENGTH 4096
-#define SLEEP(x) (sleep(x/1000))
+#define SLEEP(x) (usleep(x*1000))
 #define noinline __attribute__((noinline))
 #define EXIT(exitcode) exit(exitcode)
 #define ERR(format, ...) fprintf(stderr, "GNU --> Fatal error in %s(): " format "\n%s\n", __FUNCTION__, ##__VA_ARGS__, strerror(errno))
@@ -152,6 +164,8 @@ typedef struct mouse_state {
 	unsigned int x_pos, y_pos;
 }mouse_state, * p_mouse_state;
 #endif
+
+#define BILLION  1E9
 
 // Print error and quit
 #define ERRQC(exitcode, format, ...) {\
@@ -205,6 +219,10 @@ namespace Ventile {
 		// -------------------
 		VENTILEAPI unsigned int get_file_size(const int fd, const long offset = 0);
 		VENTILEAPI int open_file(const char* const file_name, const int flags, char** buf = NULL, const bool isproc = false);
+
+		// Percision Time
+		// -------------------
+		VENTILEAPI PERCISIONTIME get_percision_time();
 	}
 }
 

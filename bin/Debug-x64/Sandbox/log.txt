@@ -1,8 +1,10 @@
-LOG -- GENERAL --> Ventile Engine Version: 0.001.00
+LOG -- GENERAL --> DEBUG --> Ventile::Application::Application(): Ventile Engine Version: 0.001.00
+
 
 LOG -- GENERAL --> DEBUG --> Sandbox::Sandbox(): Launching Sandbox application startup procedure
 
 LOG -- GENERAL --> DEBUG --> Sandbox::deconstruct(): Launching Sandbox application shutdown procedure
 
-LOG -- GENERAL --> Engine shutting down
+LOG -- GENERAL --> DEBUG --> Ventile::Application::~Application(): Engine shutting down
+
 
