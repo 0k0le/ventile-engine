@@ -46,9 +46,10 @@ namespace Ventile {
 	Application::Application() {
         // Logger must be created before other classes
         logger = new System::Logger();
-
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
+        windowhandler = new System::WindowHandler();
+
 
         DEBUG(logger, "Ventile Engine Version: " ENGINE_VERSION "\n");
 	}
@@ -58,6 +59,8 @@ namespace Ventile {
 
         delete keyboard;
         delete mouse;
+        delete windowhandler;
+
         delete logger;
 
         SLEEP(1000);
@@ -74,6 +77,9 @@ namespace Ventile {
 
             if (kill_key && keyboard->get_key_state(kill_key))
                 engine_running = false;
+
+            if (glfwWindowShouldClose(windowhandler->window)) engine_running = false;
+            else glfwPollEvents();
 
             ret = app_proc(fDeltaTime);
 

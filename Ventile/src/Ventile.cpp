@@ -128,7 +128,7 @@ namespace Ventile {
             if (::QueryPerformanceCounter(&time) == FALSE)
                 return -2;
 
-            return static_cast<PERCISIONTIME>(time.QuadPart) / frequency.QuadPart;
+            return static_cast<PERCISIONTIME>(time.QuadPart) / static_cast<PERCISIONTIME>(frequency.QuadPart);
 #else
             struct timespec ts;
 

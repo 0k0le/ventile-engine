@@ -30,8 +30,8 @@ namespace Ventile{
             Mouse();
             ~Mouse();
 
-            unsigned int get_mouse_x();
-            unsigned int get_mouse_y();
+            MOUSERETTYPE get_mouse_x();
+            MOUSERETTYPE get_mouse_y();
 
             unsigned int get_mouse_state(unsigned short button_code);
 
@@ -39,8 +39,8 @@ namespace Ventile{
 #else
         class VENTILEAPI Mouse {
         public:
-            LONG get_mouse_x();
-            LONG get_mouse_y();
+            MOUSERETTYPE get_mouse_x();
+            MOUSERETTYPE get_mouse_y();
         };
 #endif
 	}

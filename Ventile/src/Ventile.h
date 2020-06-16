@@ -46,6 +46,7 @@
 // Force windows subsystem
 #ifdef _WIN32
 #pragma comment(linker, "/SUBSYSTEM:WINDOWS")
+#pragma comment(linker, "/NODEFAULTLIB:library")
 #endif
 
 // Allow unsafe/POSIX functions
@@ -107,6 +108,13 @@
 
 // Vulkan Headers
 // -------------------
+#include <vulkan/vulkan.h>
+
+
+// GLFW Headers
+// -------------------
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 
 // Typedefinitions and Namespaces
 // -------------------
@@ -125,6 +133,7 @@ using std::cerr;
 
 // Set process exit function
 #ifdef _WIN32
+#define FORCEINLINE __forceinline
 #define MOUSERETTYPE LONG
 #define KILLKEYPRINTF "%lu"
 #define KILLKEYTYPE int
@@ -134,6 +143,7 @@ using std::cerr;
 #define ERR(format, ...) fprintf(stderr, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #define ERRL(logger, format, ...) logger->log(LOGFAIL, "WIN --> Fatal error in %s(): " format "\n%s\n", __func__, ##__VA_ARGS__, strerror(errno))
 #else
+#define FORCEINLINE static __attribute__((always_inline))
 #define MOUSERETTYPE unsigned int
 #define KILLKEYPRINTF "%u"
 #define KILLKEYTYPE unsigned short

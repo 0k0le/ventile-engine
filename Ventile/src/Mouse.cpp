@@ -158,7 +158,7 @@ namespace Ventile {
 
 			return ret;
 		}
-		unsigned int Mouse::get_mouse_y() {
+		MOUSERETTYPE Mouse::get_mouse_y() {
 			register unsigned int ret = 0;
 
 			pthread_mutex_lock(&mouse_state_mutex);
@@ -167,7 +167,7 @@ namespace Ventile {
 
 			return ret;
 		}
-		unsigned int Mouse::get_mouse_state(unsigned short button_code) {
+		MOUSERETTYPE Mouse::get_mouse_state(unsigned short button_code) {
 			register unsigned int ret = 0;
 
 			pthread_mutex_lock(&mouse_state_mutex);
@@ -203,7 +203,7 @@ namespace Ventile {
 			DEBUG(logger, "Mouse class destroyed...");
 		}
 #else
-		LONG Mouse::get_mouse_x() {
+		MOUSERETTYPE Mouse::get_mouse_x() {
 			POINT pointInfo;
 
 			if (GetCursorPos(&pointInfo) == FALSE)
@@ -212,7 +212,7 @@ namespace Ventile {
 			return pointInfo.x;
 		}
 
-		LONG Mouse::get_mouse_y() {
+		MOUSERETTYPE Mouse::get_mouse_y() {
 			POINT pointInfo;
 
 			if (GetCursorPos(&pointInfo) == FALSE)

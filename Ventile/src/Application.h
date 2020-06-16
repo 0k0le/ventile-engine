@@ -41,6 +41,7 @@
 #include "Logging.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Window.h"
 
 namespace Ventile {
 
@@ -49,6 +50,7 @@ namespace Ventile {
 	public:
 		System::Keyboard* keyboard;
 		System::Mouse* mouse;
+		System::WindowHandler* windowhandler;
 
 		Application();
 		~Application();
@@ -56,6 +58,7 @@ namespace Ventile {
 
 		// Application controlled main loop
 		virtual int app_proc(double deltaTime) {
+			// Ignore fucking compiler warnings
 			UNUSED(deltaTime);
 			return EXIT_SUCCESS;
 		}

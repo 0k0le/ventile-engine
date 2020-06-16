@@ -42,7 +42,7 @@
 #include "Ventile.h"
 #undef VENTILEAPI
 
-static inline int vMainLoop(Ventile::Application* app, double deltaTime);
+FORCEINLINE int vMainLoop(Ventile::Application* app, double deltaTime);
 
 #ifdef  _WIN32
 #define VENTILEAPI __declspec(dllimport)
@@ -53,7 +53,7 @@ static inline int vMainLoop(Ventile::Application* app, double deltaTime);
 namespace Ventile {
 	VENTILEAPI bool engine_running;
 	VENTILEAPI KILLKEYTYPE kill_key;
-	VENTILEAPI System::Logger* logger;
+	// logger in entrypoint.h
 }
 
 class Sandbox : public Ventile::Application {
@@ -77,7 +77,7 @@ public:
 	int app_proc(double deltaTime) {
 		int ret = 0;
 
-		if ((ret = vMainLoop(this, deltaTime)) != EXIT_LOOP) {
+		if ((ret = vMainLoop(this, deltaTime)) != EXIT_LOOP || Ventile::engine_running == false) {
 			Ventile::engine_running = false;
 			deconstruct();
 		}

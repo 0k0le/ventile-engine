@@ -16,6 +16,7 @@
     <ClCompile Include="src\Logging.cpp" />
     <ClCompile Include="src\Mouse.cpp" />
     <ClCompile Include="src\Ventile.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logging.h" />
@@ -25,6 +26,7 @@
     <ClInclude Include="src\Keyboard.h" />
     <ClInclude Include="src\Ventile.h" />
     <ClInclude Include="src\VentileApplication.h" />
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -62,11 +64,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IncludePath>C:\VulkanSDK\1.2.141.0\Include;$(IncludePath);$(SolutionDir)\external\include</IncludePath>
+    <LibraryPath>C:\VulkanSDK\1.2.141.0\Lib;$(LibraryPath);$(SolutionDir)\external\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <IncludePath>C:\VulkanSDK\1.2.141.0\Include;$(IncludePath);$(SolutionDir)\external\include</IncludePath>
+    <LibraryPath>C:\VulkanSDK\1.2.141.0\Lib;$(LibraryPath);$(SolutionDir)\external\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -78,6 +84,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -94,6 +101,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

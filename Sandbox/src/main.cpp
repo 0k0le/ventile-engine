@@ -44,13 +44,17 @@
 #define KILLCODE KEY_ESC
 #endif
 
+int vMain() {
+	return 0;
+}
+
 // Application main loop
-static inline int vMainLoop(register Ventile::Application* app, double deltaTime) {	
+FORCEINLINE int vMainLoop(register Ventile::Application* app, double deltaTime) {	
 	static MOUSERETTYPE old_x = 0, old_y = 0, new_x, new_y;
 	if ((new_x = app->mouse->get_mouse_x()) != old_x || (new_y = app->mouse->get_mouse_x()) != old_y) {
 		old_x = new_x; old_y = new_y;
 
-		// Disable mouse coords
+		// Print mouse coords
 		printf("X --> " KILLKEYPRINTF " | Y --> " KILLKEYPRINTF "\n",
 			old_x, old_y);
 	}

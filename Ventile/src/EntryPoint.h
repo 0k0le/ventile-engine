@@ -42,6 +42,11 @@
 // User must require signal handler and application spawner
 extern Ventile::Application* CreateApplication();
 extern void SignalHandler(int signal);
+extern int vMain();
+
+namespace Ventile {
+	VENTILEAPI System::Logger* logger;
+}
 
 #ifdef _WIN32
 
@@ -61,6 +66,10 @@ int WINAPI WinMain(	HINSTANCE hInstance,
 
 	// Spawn application
 	Ventile::Application* app = CreateApplication();
+
+	if (vMain() == -1)
+		ERRLQ(Ventile::logger, "V main failed!");
+
 	int ret = app->run();
 	delete app;
 
@@ -80,6 +89,10 @@ int main(const int argc, const char** const argv, const char** const envp) {
 
 	// Spawn application
 	Ventile::Application* app = CreateApplication();
+
+	if (vMain() == -1)
+		ERRLQ(Ventile::logger, "V main failed!");
+
 	int ret = app->run();
 	delete app;
 
