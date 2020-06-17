@@ -38,17 +38,30 @@
 
 #include "Ventile.h"
 
+void* operator new(size_t size) {
+    void* ptr = Ventile::System::ec_malloc(size);
+    if (ptr == NULL)
+        ERRQ("Failed to allocate memory!");
+    return ptr;
+}
+
+void operator delete(void* ptr) {
+    free(ptr);
+    ptr = nullptr; // Done for nullptr recognition for early free
+}
+
 namespace Ventile {
 	VENTILEAPI bool engine_running = true;
     VENTILEAPI KILLKEYTYPE kill_key = 0;
     VENTILEAPI System::Logger* logger;
 
-	Application::Application() {
+	Application::Application(int width, int height, const char* const applicationName) {
         // Logger must be created before other classes
         logger = new System::Logger();
         keyboard = new System::Keyboard();
         mouse = new System::Mouse();
-        windowhandler = new System::WindowHandler();
+        windowhandler = new System::WindowHandler(width, height, applicationName);
+        renderer = new System::Renderer(windowhandler->GetApplicationName());
 
 
         DEBUG(logger, "Ventile Engine Version: " ENGINE_VERSION "\n");
@@ -59,6 +72,8 @@ namespace Ventile {
 
         delete keyboard;
         delete mouse;
+
+        delete renderer;
         delete windowhandler;
 
         delete logger;

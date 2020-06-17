@@ -39,6 +39,18 @@
 
 #ifndef _ENGINE_DLL
 
+void* operator new(size_t size) {
+	void* ptr = Ventile::System::ec_malloc(size);
+	if (ptr == NULL)
+		ERRQ("Failed to allocate memory!");
+	return ptr;
+}
+
+void operator delete(void* ptr) {
+	free(ptr);
+	ptr = nullptr; // Done for nullptr recognition for early free
+}
+
 // User must require signal handler and application spawner
 extern Ventile::Application* CreateApplication();
 extern void SignalHandler(int signal);

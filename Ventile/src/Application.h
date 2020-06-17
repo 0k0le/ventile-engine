@@ -42,6 +42,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Window.h"
+#include "Renderer.h"
 
 namespace Ventile {
 
@@ -51,8 +52,9 @@ namespace Ventile {
 		System::Keyboard* keyboard;
 		System::Mouse* mouse;
 		System::WindowHandler* windowhandler;
+		System::Renderer* renderer;
 
-		Application();
+		Application(int width = 800, int height = 600, const char* const applicationName = "Ventile " ENGINE_VERSION);
 		~Application();
 		int run();
 

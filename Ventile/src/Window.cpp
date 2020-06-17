@@ -33,5 +33,7 @@ namespace Ventile {
 
 			DEBUG(logger, "Application window destroyed!");
 		}
+
+		const char* WindowHandler::GetApplicationName() { return _title; }
 	}
 }

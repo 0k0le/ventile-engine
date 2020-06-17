@@ -35,6 +35,9 @@
 // Windows 10 Home
 // Evaluation Copy. Build 19631.mn_release.200514-1410
 
+// If source file contains main loop, include this
+#define _IS_ENTRY
+
 // Ventile Engine API
 #include "../../Ventile/src/VentileApplication.h"
 
@@ -55,8 +58,8 @@ FORCEINLINE int vMainLoop(register Ventile::Application* app, double deltaTime) 
 		old_x = new_x; old_y = new_y;
 
 		// Print mouse coords
-		printf("X --> " KILLKEYPRINTF " | Y --> " KILLKEYPRINTF "\n",
-			old_x, old_y);
+		//printf("X --> " KILLKEYPRINTF " | Y --> " KILLKEYPRINTF "\n",
+			//old_x, old_y);
 	}
 
 	// Kill application if ESC is pressed

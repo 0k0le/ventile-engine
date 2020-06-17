@@ -237,4 +237,6 @@ namespace Ventile {
 }
 
 #include "Application.h"
+#ifdef _IS_ENTRY
 #include "EntryPoint.h"
+#endif

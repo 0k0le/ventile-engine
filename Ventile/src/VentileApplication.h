@@ -39,6 +39,8 @@
 
 #pragma once
 
+#ifdef _IS_ENTRY
+
 #include "Ventile.h"
 #undef VENTILEAPI
 
@@ -98,3 +100,5 @@ void SignalHandler(int signal) {
 Ventile::Application* CreateApplication() {
 	return new Sandbox();
 }
+
+#endif
